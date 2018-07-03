@@ -57,6 +57,7 @@ export class Song{ //类
 		this.groupKeys= 12;
 		this.base = 2;
 		this.prefix = 'data:audio/mpeg;base64,';
+		this.keys = ['C','D','E','F','G','A','B'];
 
     }
 
@@ -70,10 +71,10 @@ export class Song{ //类
             return;
 
         }
-        let keys=['C','D','E','F','G','A','B'];
+       
         //console.log(SIGNATURE[this.key_signature]);
         let whites = SIGNATURE[this.key_signature]["audio-index"];
-        let index =  group*this.groupKeys + whites[keys.indexOf(key) % 7] + parseInt(keys.   indexOf(key) / 7)*this.groupKeys;
+        let index =  group*this.groupKeys + whites[this.keys.indexOf(key) % 7] + parseInt(this.keys.indexOf(key) / 7)*this.groupKeys;
         let audio = new Audio(this.prefix + notes[index]);
         audio.play();
 
@@ -121,7 +122,6 @@ export class Song{ //类
             }
             
         }
-
 
         //解析拍数
         c = this.spectrum.charAt(this.position);
