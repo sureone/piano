@@ -43,11 +43,12 @@ attachFastClick.attach(document.body);
 import Group from './components/Group'
 const prefix = 'data:audio/mpeg;base64,';
 import {notes} from './notes.js'
-import {SIGNATURE} from './global.js'
+import {SIGNATURE,Song} from './global.js'
 const groupKeys = 12;
 const base = 2;
-var currentPlayPos=-1;
 
+
+var curSong = null;
 
 export default {
     components: {
@@ -67,10 +68,36 @@ export default {
                 'C4[3]B3[2]F3[1]E3[3]D3[2]F3[1]F3[1]G3[1]A3[1]B3[3]B3[2]',
 
             spectrum://隐形的翅膀
-                '{C}D3[0.5]F3[0.5]C4[1.5]A3[0.5]C4[1]C4[0.5]B3[0.25]A3[0.25]'+
-                'B3[1.5]G3[0.5]A3[0.5]G3[2]'+
-                'A3[1]G3[0.5]F3[0.5]F3[0.5]E3[1]D3[0.5]'+
-                'E[4]',
+                //'D3[0.5]F3[0.5]C4[1.5]A3[0.5]C4[1]C4[0.5]B3[0.25]A3[0.25]'+
+                //'B3[1.5]G3[0.5]A3[0.5]G3[2]'+
+                //'A3[1]G3[0.5]F3[0.5]F3[0.5]E3[1]D3[0.5]'+
+                //'E[4]A3[0.5]C4[0.5]D4[0.5]E4[0.5]E4[1.5]D4[0.25]C4[0.25]'+
+                //'D4[1.5]C4[0.25]D4[0.25]C4[2]'+
+                //'S[0.5]G3[0.5]F3[0.5]E3[0.5]D3[1.5]C3[0.25]B2[0.25]C[3]'+
+
+                '{C}'+
+                'G2[0.5]CE[1.5]G[0.5]E[1]D[0.5]CCCCA2[0.25]G2[1]G2[0.5]C'+
+                'E[1.5]G[0.5]GGAGGD[0.25]ED[0.5]C[0.25]DD[1]A[0.5]GE[1.5]G[0.5]GGAGEDCC[0.25]DA2[1]G2[0.5]A2'+
+                'C[1.5]D[0.25]ED[1]E[0.5]CC[3]'+
+
+                'G2[0.5]CE[1.5]G[0.5]E[1]D[0.5]CCCCA2[0.25]G2[1]G2[0.5]C'+
+                'E[1.5]G[0.5]GGAGGD[0.25]ED[0.5]C[0.25]DD[1]A[0.5]GE[1.5]G[0.5]GGAGEDCC[0.25]DA2[1]G2[0.5]A2'+
+                'C[1.5]D[0.25]ED[1]E[0.5]CC[3]'+
+              
+
+                'E[0.5]GC4[1.5]B[0.25]C4B[1]A[0.5]GAC4EDC3[1]C3[0.5]C3'+
+                'C3C4[1]G[0.25]AG[0.5]D[0.25]ED[0.5]C[0.25]DD[3]'+
+                'E[0.5]GC4[1.5]A[0.25]C4B[1]A[0.5]GAC4EDC[1]C[0.5]C'+
+                'CC4[1]G[0.25]AG[0.5]D[0.25]ED[0.5]CC[3]'+
+
+
+                'G2[0.5]CE[1.5]G[0.5]E[1]D[0.5]CCCCA2[0.25]G2[1]G2[0.5]C'+
+                'E[1.5]G[0.5]GGAGGD[0.25]ED[0.5]C[0.25]DD[1]A[0.5]GE[1.5]G[0.5]GGAGEDCC[0.25]DA2[1]G2[0.5]A2'+
+                'C[1.5]D[0.25]ED[1]E[0.5]CC[3]'+
+                'E[0.5]GC4[1.5]B[0.25]C4B[1]A[0.5]GAC4EDC3[1]C3[0.5]C3'+
+                'C3C4[1]G[0.25]AG[0.5]D[0.25]ED[1]S[1]C[0.5]CC[1]'
+
+
                   
 
         }
@@ -86,89 +113,12 @@ export default {
             let audio = new Audio(prefix + notes[index]);
             audio.play();
         },
-        //key 音符  group 音组  meter 拍数
-        playKey(key,group,meter){
-            console.log("play "+ key+group||"")
 
-            if(key=='S'){
-                //休止符
-                setTimeout(this.parseAndPlaySpectrum,parseInt(this.meter_time*meter));
-                return;
-
-            }
-            let keys=['C','D','E','F','G','A','B'];
-            //console.log(SIGNATURE[this.key_signature]);
-            let whites = SIGNATURE[this.key_signature]["audio-index"];
-            let index =  group*groupKeys + whites[keys.indexOf(key) % 7] + parseInt(keys.indexOf(key) / 7)*groupKeys;
-                    let audio = new Audio(prefix + notes[index]);
-                    audio.play();
-            setTimeout(this.parseAndPlaySpectrum,parseInt(this.meter_time*meter));
-
-        },
-
-
-        parseAndPlaySpectrum(){
-
-            if(currentPlayPos==-1) return;
-
-            if(currentPlayPos>=this.spectrum.length){
-
-                currentPlayPos = -1;
-                return;
-            }
-
-            let c = this.spectrum.charAt(currentPlayPos);
-            if(c=='{'){
-                let cc=[];
-                currentPlayPos = currentPlayPos + 1;
-                while(c!='}' && currentPlayPos<this.spectrum.length){
-                    c = this.spectrum.charAt(currentPlayPos);
-                    currentPlayPos = currentPlayPos + 1;
-                    if(c!='}') cc.push(c);
-
-                }
-
-                this.key_signature = cc.join("");
-                console.log("signature: "+this.key_signature)
-
-            }
-
-            let key = this.spectrum.charAt(currentPlayPos);
-            currentPlayPos=currentPlayPos+1;
-            let group = '3';
-            if (key!='S'){ //休止符没有group
-                group = this.spectrum.charAt(currentPlayPos);
-                currentPlayPos=currentPlayPos+1;
-            }
-
-
-            //解析拍数
-            c = this.spectrum.charAt(currentPlayPos);
-            let meter=1;
-            if(c=='['){
-                let cc = []; 
-                currentPlayPos = currentPlayPos + 1;
-                while(c!=']' && currentPlayPos<this.spectrum.length){
-                    c = this.spectrum.charAt(currentPlayPos);
-                    currentPlayPos = currentPlayPos + 1;
-                    if(c!=']') cc.push(c);
-                }
-
-                meter = parseFloat(cc.join(''));
-
-            }
-            console.log(currentPlayPos+","+group+","+meter);
-            this.playKey(key,parseInt(group),meter);
-            
-
-
-        },
+        
         doPlay(){
-            currentPlayPos=0;
-
-
-            this.parseAndPlaySpectrum();
-            console.log(this.spectrum);
+            curSong = new Song(this.spectrum,this.meter_time);
+            curSong.play();
+            //console.log(this.spectrum);
 
 
         }
