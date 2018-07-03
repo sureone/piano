@@ -60,12 +60,18 @@ export default {
             key_signature:"C", //调号
             
             spectrum1:'C3[1]C3[1]G3[1]G3[1]A3[1]A3[1]G3[2]F3[1]F3[1]E3[1]E3[1]D3[1]D3[1]C3[2]',  //小星星
-            spectrum:
+            spectrum2://雪绒花
                 '{bb}D3[3]F3[3]E3[3]F3[3]D3[2]F3[1]C4[3]B3[2]F3[1]E3[3]D3[2]D3[2]D3[1]E3[1]F3[1]'+
                 'G3[3]F3[3]D3[2]F3[1]C4[3]B3[2]F3[1]E3[3]D3[2]F3[1]F3[1]G3[1]A3[1]B3[3]B3[3]'+
                 'B3[0.5]S[3]S[3]F3[0.5]F3[1]A3[1]G3[1]F3[1]D3[2]F3[1]B3[3]G3[2]B3[1]C4[2]B3[1]A3[2]A3[1]F3[3]D3[2]F3[1]'+
-                'C4[3]B3[2]F3[1]E3[3]D3[2]F3[1]F3[1]G3[1]A3[1]B3[3]B3[2]'
-                  //雪绒花
+                'C4[3]B3[2]F3[1]E3[3]D3[2]F3[1]F3[1]G3[1]A3[1]B3[3]B3[2]',
+
+            spectrum://隐形的翅膀
+                '{C}D3[0.5]F3[0.5]C4[1.5]A3[0.5]C4[1]C4[0.5]B3[0.25]A3[0.25]'+
+                'B3[1.5]G3[0.5]A3[0.5]G3[2]'+
+                'A3[1]G3[0.5]F3[0.5]F3[0.5]E3[1]D3[0.5]'+
+                'E[4]',
+                  
 
         }
     },
@@ -96,7 +102,6 @@ export default {
             let index =  group*groupKeys + whites[keys.indexOf(key) % 7] + parseInt(keys.indexOf(key) / 7)*groupKeys;
                     let audio = new Audio(prefix + notes[index]);
                     audio.play();
-
             setTimeout(this.parseAndPlaySpectrum,parseInt(this.meter_time*meter));
 
         },
