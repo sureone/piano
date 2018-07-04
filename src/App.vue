@@ -67,7 +67,7 @@ export default {
                 'B3[0.5]S[3]S[3]F3[0.5]F3[1]A3[1]G3[1]F3[1]D3[2]F3[1]B3[3]G3[2]B3[1]C4[2]B3[1]A3[2]A3[1]F3[3]D3[2]F3[1]'+
                 'C4[3]B3[2]F3[1]E3[3]D3[2]F3[1]F3[1]G3[1]A3[1]B3[3]B3[2]',
 
-            spectrum://隐形的翅膀
+            spectrum3://隐形的翅膀
                 //'D3[0.5]F3[0.5]C4[1.5]A3[0.5]C4[1]C4[0.5]B3[0.25]A3[0.25]'+
                 //'B3[1.5]G3[0.5]A3[0.5]G3[2]'+
                 //'A3[1]G3[0.5]F3[0.5]F3[0.5]E3[1]D3[0.5]'+
@@ -95,11 +95,35 @@ export default {
                 'E[1.5]G[0.5]GGAGGD[0.25]ED[0.5]C[0.25]DD[1]A[0.5]GE[1.5]G[0.5]GGAGEDCC[0.25]DA2[1]G2[0.5]A2'+
                 'C[1.5]D[0.25]ED[1]E[0.5]CC[3]'+
                 'E[0.5]GC4[1.5]B[0.25]C4B[1]A[0.5]GAC4EDC3[1]C3[0.5]C3'+
-                'C3C4[1]G[0.25]AG[0.5]D[0.25]ED[1]S[1]C[0.5]CC[1]'
+                'C3C4[1]G[0.25]AG[0.5]D[0.25]ED[1]S[1]C[0.5]CC[1]',
+            spectrum4://虫儿飞
+                '{b}'+
+                'E[1]E[0.5]EF[1]GE[2]DC[1]C[0.5]CD[1]EE[1.5]B2[0.5]B2[1.5]'+
+                'B2[1]ED[2]B2[1]ED[2]B2[1]ED[1.5]C[0.5]C[4]'+
+                'E[0.5]DG[2]F[0.5]ED[2]G[0.5]FEDG[1.5]E[0.5]D[2]G2[1]ED[2]'+
+                'B2[1]ED[2]F[0.5]EFED[2]F[0.5]EFEC[1]D[0.5]C[0.25]C[4]',
+
+            spectrum5://鸿雁
+                '{b}'+
+                'E[1]C[0.5]A2G2[1.5]G[1]A[0.5]C4A[2]A[1]G[0.5]ECDGEDD[3]'+
+                'G[1]A[0.5]C4A[2]D[0.5]ECA2G2[2]E[1]C[0.5]A2G2A2E[1]A2[4]'+
+                'E[1]C[0.5]A2G2[1.5]G[1]A[0.5]C4A[2]A[1]G[0.5]ECDGEDD[3]'+
+                'G[1]A[0.5]C4A[2]D[0.5]ECA2G2[2]E[1]C[0.5]A2G2A2E[1]A2[4]',
+            spectrum6://歌声与微笑
+                '{b}'+
+                'F[0.5]FFFD[0.75]E[0.25]F[1]'+
+                'F[0.5]FFFD[0.75]E[0.25]F[1]'+
+                'G[0.5]GG[0.25]FGE[4]',
+            spectrum7://康定情歌
+                '{b}'+
+                'E[0.5]GAA[0.25]GA[0.75]E[0.25]D[1]',
+            spectrum: //爱的罗曼史
+                '{#}B[1]BBBAGGFEEGBE4E4E4E4D4C4C4BAABC4B+D4C4BD4#C4B'+
+                'BAGGFEFFE+FD#+F#GFEEEE[3]B[1]BBBAGGFEEGBE4E4E4E4D4C4'+
+                'C4BAABC4D4BC4BD4#C4BBAGGFEFFE+FD#+F#GFE+B2E+B2E+B2E+B2[3]'
 
 
                   
-
         }
     },
     methods: {
@@ -116,7 +140,7 @@ export default {
 
         
         doPlay(){
-            curSong = new Song(this.spectrum,this.meter_time);
+            curSong = new Song([this.spectrum],this.meter_time);
             curSong.play();
             //console.log(this.spectrum);
 

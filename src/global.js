@@ -9,15 +9,16 @@ export const SIGNATURE = {
 	},
 	//一个#   F#
 	"#":{
-		"audio-index":[0, 2, 4, 6, 7, 9, 11],
+		"audio-index":[7, 9, 11,13,14,16,18],
 	},
 	//一个b   Fb
 	"b":{
-		"audio-index":[0, 2, 4, 4, 7, 9, 11],
+		"audio-index":[5, 7, 9, 10, 12 , 14, 16],
 	},
+	
 	//2个b   Bb,Eb
 	"bb":{
-		"audio-index":[0, 2, 3, 5, 7, 9, 10],
+		"audio-index":[-1,1,2,4,6,8,9],
 	},
 
 	//2个#   F#,C#
@@ -45,8 +46,24 @@ function isDigit(value) {
     }
 }
 
+export class Song{
+	constructor(tracks,meter_time){
+		this.tracks = [];
+		tracks.forEach((item,index)=>{
+		    this.tracks.push (new Track(item,meter_time))
+		})
+		
+		this.meter_time = meter_time;
 
-export class Song{ //类
+	}
+	play(){
+		this.tracks.forEach((item,index)=>{
+		    item.play();
+		})
+	}
+}
+
+export class Track{ //类
     //为对象添加属性
     constructor(spectrum,meter_time){ //给参数传默认值，防止调用时忘记传实参而报错
         this.spectrum=spectrum;
@@ -55,16 +72,25 @@ export class Song{ //类
         this.key_signature = "C";
 		this.last_meter= 1;
 		this.groupKeys= 12;
-		this.base = 2;
+		this.base = 0;
 		this.prefix = 'data:audio/mpeg;base64,';
 		this.keys = ['C','D','E','F','G','A','B'];
 
     }
 
-    //key 音符  group 音组  meter 拍数
-    playKey(key,group,meter){
-        console.log("play key="+ key+ (group||"") + ", meter="+meter);
+    //keys 组合key
+    playKeys(keys,meter){
 
+    	keys.forEach((key,index)=>{
+    		this.playSingleKey(key.code,key.group,meter,key.sjd);
+    	})
+
+    	setTimeout(()=>{this.play()},parseInt(this.meter_time*meter));
+    }
+    //key 音符  group 音组  meter 拍数,sjd 升降调
+    playSingleKey(key,group,meter,sjd){
+        
+    	console.log("play key="+ key+group+",meter="+meter+",sjd="+sjd);
         if(key=='S'){
             //休止符
             setTimeout(()=>{this.play()},parseInt(this.meter_time*meter));
@@ -74,11 +100,16 @@ export class Song{ //类
        
         //console.log(SIGNATURE[this.key_signature]);
         let whites = SIGNATURE[this.key_signature]["audio-index"];
-        let index =  group*this.groupKeys + whites[this.keys.indexOf(key) % 7] + parseInt(this.keys.indexOf(key) / 7)*this.groupKeys;
+        group = group+this.base;
+        console.log("audio index="+(this.keys.indexOf(key) % 7));
+        let index =  group*this.groupKeys + whites[this.keys.indexOf(key) % 7]+sjd;
+        console.log("audio index="+index);
+
+
         let audio = new Audio(this.prefix + notes[index]);
         audio.play();
 
-        setTimeout(()=>{this.play()},parseInt(this.meter_time*meter));
+        
 
     }
     play(){
@@ -107,21 +138,57 @@ export class Song{ //类
 
         }
 
-        let key = this.spectrum.charAt(this.position);
-        this.position=this.position+1;
 
-        let group = '3';
-        if (key!='S'){ //休止符没有group
-            group = this.spectrum.charAt(this.position);
-            this.position=this.position+1;
-            if (!isDigit(group)){
+        //解析key
+        let keys=[]
+        let key={
+        	code:'C',
+        	group:'3',
+        	sjd:0
+        };
+        while(this.position<this.spectrum.length){
+            c = this.spectrum.charAt(this.position);
+            this.position = this.position + 1;
+            let group = '3';
+	        if (c!='S'){ //休止符没有group
+	            group = this.spectrum.charAt(this.position);
+	            this.position=this.position+1;
+	            if (!isDigit(group)){
+	                group='3';
+	                this.position--;
+	            }
 
-                group='3';
-                this.position--;
+	        }
+	        key['code'] = c;
+	        key['group'] = parseInt(group);
 
-            }
-            
+	        while(this.position<this.spectrum.length){
+	        	c = this.spectrum.charAt(this.position);
+	        	this.position=this.position+1;
+	        	if(c=='b' || c=='#'){
+	        		if(c=='b') key['sjd']--;
+	        		else key['sjd']++;
+	        	}else{
+	        		this.position=this.position-1;
+	        		break;
+	        	}
+	        }
+
+	        keys.push(key);
+
+	        c = this.spectrum.charAt(this.position);
+	        if(c!='+'){
+	        	break;
+	        }
+	        key={
+	        	code:'C',
+	        	group:'3',
+	        	sjd:0
+	        };
+	        this.position=this.position+1;
+
         }
+        
 
         //解析拍数
         c = this.spectrum.charAt(this.position);
@@ -134,7 +201,6 @@ export class Song{ //类
                 this.position = this.position + 1;
                 if(c!=']') cc.push(c);
             }
-
             meter = parseFloat(cc.join(''));
             this.last_meter = meter;
 
@@ -143,7 +209,8 @@ export class Song{ //类
             meter = this.last_meter;
 
         }
-        this.playKey(key,parseInt(group),meter);
+        this.playKeys(keys,meter);
+        console.log("------------------");
         
 
 
